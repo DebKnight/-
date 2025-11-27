@@ -1,0 +1,618 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GarageMarket | Покупка и продажа гаражей</title>
+    <style>
+        /* --- Сброс стилей и переменные --- */
+        :root {
+            --primary-color: #ff6b00;
+            --dark-bg: #1a1a1a;
+            --card-bg: #262626;
+            --text-color: #e0e0e0;
+            --text-muted: #a0a0a0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 80px; /* Отступ для плавающей кнопки */
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- Шапка (Header) --- */
+        header {
+            background-color: var(--dark-bg);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-reg {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+            .btn-reg:hover {
+                background-color: #e65c00;
+            }
+
+        /* --- Hero Секция --- */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1530268578403-ec52a81907cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'); /* Используем внешний URL для демонстрации */
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+            .hero h1 {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                text-transform: uppercase;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+                margin-bottom: 2rem;
+                max-width: 600px;
+            }
+
+        /* --- Фильтр / Поиск --- */
+        .search-bar {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-top: -40px;
+            margin-bottom: 40px;
+            width: 90%;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+            .search-bar input, .search-bar select {
+                padding: 10px;
+                background: #333;
+                border: 1px solid #444;
+                color: white;
+                border-radius: 4px;
+                flex: 1;
+                min-width: 150px;
+            }
+
+            .search-bar button {
+                padding: 10px 30px;
+                background: var(--primary-color);
+                border: none;
+                color: white;
+                cursor: pointer;
+                font-weight: bold;
+                border-radius: 4px;
+            }
+
+        /* --- Каталог (Grid) --- */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+        }
+
+        .section-title {
+            margin-bottom: 30px;
+            font-size: 2rem;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+        }
+
+        .garage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+            .card img {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+            }
+
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-price {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .card-specs {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 15px;
+        }
+
+        .card-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .card-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: #444;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            flex: 1;
+            cursor: pointer;
+        }
+
+            .card-btn:hover {
+                background: #555;
+            }
+
+        .btn-buy { /* Стиль для кнопки "В корзину" */
+            flex: 1;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+            .btn-buy:hover {
+                background: #e65c00;
+            }
+
+
+        /* --- ПЛАВАЮЩАЯ КОРЗИНА (Кнопка) --- */
+        .cart-float-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.5);
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: red;
+            color: white;
+            font-size: 0.8rem;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            border: 2px solid var(--dark-bg);
+        }
+
+        /* --- МОДАЛЬНОЕ ОКНО КОРЗИНЫ --- */
+        .cart-modal {
+            display: none; /* Скрыто по умолчанию */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: flex-end;
+        }
+
+        .cart-content {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+        }
+
+        .close-cart {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            background: #333;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+            .cart-item img {
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 4px;
+                margin-right: 15px;
+            }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-title {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .cart-item-price {
+            color: var(--primary-color);
+        }
+
+        .remove-btn {
+            background: transparent;
+            border: 1px solid #555;
+            color: #888;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .cart-total {
+            font-size: 1.3rem;
+            margin-top: 30px;
+            text-align: right;
+            border-top: 2px solid #444;
+            padding-top: 20px;
+        }
+
+        /* --- Регистрация --- */
+        .registration-section {
+            background-color: var(--dark-bg);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .reg-form {
+            max-width: 400px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary-color);
+        }
+
+            .reg-form input {
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 15px;
+                background: #333;
+                border: 1px solid #444;
+                color: white;
+                border-radius: 4px;
+            }
+
+            .reg-form button {
+                width: 100%;
+                padding: 12px;
+                background: var(--primary-color);
+                border: none;
+                color: white;
+                font-weight: bold;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+
+        /* --- Footer --- */
+        footer {
+            background: #000;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            margin-top: auto;
+        }
+
+        /* --- Адаптивность для мобильных (Media Queries) --- */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                gap: 10px;
+                font-size: 0.9rem;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">GarageMarket</div>
+        <nav>
+            <ul>
+                <li><a href="#">Главная</a></li>
+                <li><a href="#catalog">Купить</a></li>
+                <li><a href="#">Продать</a></li>
+                <li><a href="#register" class="btn-reg">Войти</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Надежный дом для твоей техники</h1>
+        <p>Найди идеальный гараж, где поместится всё: от инструментов до внедорожника.</p>
+    </section>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Район или улица...">
+        <select>
+            <option>Любой тип</option>
+            <option>Кирпичный</option>
+            <option>Металлический</option>
+            <option>С ямой</option>
+            <option>Под джип/микроавтобус</option>
+        </select>
+        <select>
+            <option>Цена: любая</option>
+            <option>до 500 000 ₽</option>
+            <option>до 1 000 000 ₽</option>
+        </select>
+        <button>Найти</button>
+    </div>
+
+    <div class="container" id="catalog">
+        <h2 class="section-title">Свежие предложения</h2>
+
+        <div class="garage-grid">
+
+            <div class="card"
+                 data-id="1"
+                 data-title="Тройной бокс (High Ceiling)"
+                 data-price="1200000"
+                 data-image="гараж3.jpg">
+                <img src="гараж3.jpg" alt="Большой гараж">
+                <div class="card-content">
+                    <div class="card-price">1 200 000 ₽</div>
+                    <div class="card-title">Тройной бокс (High Ceiling)</div>
+                    <div class="card-specs">
+                        <span>45 м²</span>
+                        <span>Охрана 24/7</span>
+                        <span>Есть яма</span>
+                    </div>
+                    <p style="font-size: 0.9em; margin-bottom: 15px; color: #ccc;">
+                        Идеально подходит для <strong>Tahoe или RAM TRX</strong>. Высокие ворота, усиленный пол, место под верстак.
+                    </p>
+                    <div class="card-actions">
+                        <a href="#" class="card-btn">Подробнее</a>
+                        <button class="btn-buy" onclick="addToCart(this)">В корзину</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card"
+                 data-id="2"
+                 data-title="Кирпичный в ГСК 'Восток'"
+                 data-price="450000"
+                 data-image="гараж1.jpg">
+                <img src="гараж1.jpg" alt="Кирпичный гараж">
+                <div class="card-content">
+                    <div class="card-price">450 000 ₽</div>
+                    <div class="card-title">Кирпичный в ГСК "Восток"</div>
+                    <div class="card-specs">
+                        <span>18 м²</span>
+                        <span>Электричество</span>
+                        <span>Сухой</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="card-btn">Подробнее</a>
+                        <button class="btn-buy" onclick="addToCart(this)">В корзину</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card"
+                 data-id="3"
+                 data-title="Металлический разборный"
+                 data-price="180000"
+                 data-image="IMG_20250721_174512_887.jpg">
+                <img src="IMG_20250721_174512_887.jpg" alt="Металлический гараж">
+                <div class="card-content">
+                    <div class="card-price">180 000 ₽</div>
+                    <div class="card-title">Металлический разборный</div>
+                    <div class="card-specs">
+                        <span>15 м²</span>
+                        <span>Вывоз</span>
+                        <span>Без ямы</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="card-btn">Подробнее</a>
+                        <button class="btn-buy" onclick="addToCart(this)">В корзину</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card"
+                 data-id="4"
+                 data-title="Гараж-мастерская"
+                 data-price="850000"
+                 data-image="гараж2.jpg">
+                <img src="гараж2.jpg" alt="Гараж с мастерской">
+                <div class="card-content">
+                    <div class="card-price">850 000 ₽</div>
+                    <div class="card-title">Гараж-мастерская</div>
+                    <div class="card-specs">
+                        <span>24 м²</span>
+                        <span>Утеплен</span>
+                        <span>380В</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="card-btn">Подробнее</a>
+                        <button class="btn-buy" onclick="addToCart(this)">В корзину</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <section class="registration-section" id="register">
+        <h2 style="margin-bottom: 20px; color: white;">Присоединяйся к сообществу</h2>
+        <div class="reg-form">
+            <h3 style="margin-bottom: 20px; color: var(--text-color);">Регистрация</h3>
+            <form>
+                <input type="text" placeholder="Ваше имя (например, Владимир)">
+                <input type="email" placeholder="Email">
+                <input type="password" placeholder="Пароль">
+                <input type="password" placeholder="Повторите пароль">
+                <button type="button" onclick="alert('Спасибо! Это демо-версия, но кнопка работает.')">Зарегистрироваться</button>
+            </form>
+            <p style="margin-top: 15px; font-size: 0.9rem; color: #888;">
+                Уже есть аккаунт? <a href="#" style="color: var(--primary-color);">Войти</a>
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 GarageMarket. Сделано для настоящих ценителей.</p>
+    </footer>
+
+    <div class="cart-float-btn" onclick="openCart()">
+        🛒
+        <div class="cart-count" id="cart-count">0</div>
+    </div>
+
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-content">
+            <span class="close-cart" onclick="closeCart()">&times;</span>
+            <h2 style="margin-bottom: 20px;">Ваш список избранного</h2>
+
+            <div id="cart-items-container">
+                <p style="color: #666;">Корзина пуста...</p>
+            </div>
+
+            <div class="cart-total">
+                Общая сумма: <span id="cart-total-price" style="color: var(--primary-color);">0 ₽</span>
+            </div>
+
+            <button style="width:100%; padding:15px; margin-top:20px; background:var(--primary-color); border:none; color:white; font-weight:bold; cursor:pointer;" onclick="alert('Заявка на осмотр отправлена!')">Оформить заявку</button>
+        </div>
+    </div>
+
+    <script src="cart.js" defer></script>
+</body>
+</html>
